@@ -10,6 +10,10 @@
   (->> [{}] (all :part :bass)) =>
     [{:part :bass}])
 
+(fact "wherever transforms only those notes that match the condition."
+  (->> (phrase [1 2] [0 0]) (wherever #(-> % :time pos?) :pitch inc)) =>
+    [{:time 0 :duration 1 :pitch 0} {:time 1 :duration 2 :pitch 1}])
+
 (fact "rhythm takes sequential durations and produces a rhythm."
   (rhythm [1 2]) =>
     [{:time 0 :duration 1}
