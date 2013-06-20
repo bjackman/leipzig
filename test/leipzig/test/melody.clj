@@ -7,7 +7,7 @@
     [{:time 2000}])
 
 (fact
-  (->> [{}] (always :part :bass)) =>
+  (->> [{}] (all :part :bass)) =>
     [{:part :bass}])
 
 (fact "rhythm takes sequential durations and produces a rhythm."

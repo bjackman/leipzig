@@ -24,9 +24,9 @@
   e.g. (->> notes (wherever (comp not :part), :part (is :bass)))" 
   constantly)
 
-(defn always
+(defn all
   "Set key k to value v for all notes.
-  e.g. (->> notes (always :part :piano))"
+  e.g. (->> notes (all :part :piano))"
   [k v notes] (map #(assoc % k v) notes))
 
 (defn- if-applicable [condition? f] (fn [x] (if (condition? x) (f x) x)))
