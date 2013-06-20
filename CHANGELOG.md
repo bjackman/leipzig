@@ -6,7 +6,9 @@ document them here.
 
 New in 0.6.0
 ------------
+* *Breaking change* `where` ignores notes without the relevant key to be transformed.
 * *Addition* - Passing `nil` to `phrase` generates a reified rest, which is ignored by play. 
+* *Addition* - `all` sets the specified key to a constant value over a melody.
 
 New in 0.5.0
 ------------
