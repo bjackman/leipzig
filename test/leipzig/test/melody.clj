@@ -7,14 +7,8 @@
     [{:time 2000}])
 
 (fact
-  (->> [{}] (where :part (is :bass))) =>
+  (->> [{}] (always :part :bass)) =>
     [{:part :bass}])
-
-(fact "wherever can be used to provide default values to keys."
-  (->> [{:time 0} {:time 1, :part :piano}]
-    (wherever (comp not :part), :part (is :bass))) =>
-    [{:time 0, :part :bass}
-     {:time 1, :part :piano}])
 
 (fact "rhythm takes sequential durations and produces a rhythm."
   (rhythm [1 2]) =>
@@ -33,6 +27,7 @@
   
   (phrase [1 1 2] [3 nil 4]) =>
     [{:time 0 :duration 1 :pitch 3}
+     {:time 1 :duration 1 :pitch nil :rest true}
      {:time 2 :duration 2 :pitch 4}])
 
 (fact

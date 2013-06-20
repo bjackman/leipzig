@@ -21,6 +21,7 @@
   (future
     (->>
       notes
+      (filter (comp not :rest))
       (after (overtone/now))
       trickle
       (map (fn [{epoch :time :as note}] (->> note play-note (overtone/at epoch))))

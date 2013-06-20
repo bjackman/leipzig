@@ -19,19 +19,12 @@
   [k values notes]
   (map #(assoc %1 k %2) notes values))
 
-(defn phrase
-  "Translates a sequence of durations and pitches into a melody.
-  nil pitches signify rests.
-  e.g. (phrase [1/2 1/2 1/2 3/2 1/2 1/2 1/2] [0 1 2 nil 4 4/5 5])" 
-  [durations pitches]
-  (->> (rhythm durations)
-       (having :pitch pitches)
-       (filter :pitch)))
-
 (def is
   "Synonym for constantly.
   e.g. (->> notes (where :part (is :bass)))" 
   constantly)
+
+(defn always [k v notes] (map #(assoc % k v) notes))
 
 (defn- if-applicable [condition? f] (fn [x] (if (condition? x) (f x) x)))
 (defn wherever
@@ -46,7 +39,16 @@
   "Applies f to the k key of each note in notes.
   e.g. (->> notes (where :time (bpm 90)))"
   [k f notes]
-  (wherever (is true), k f notes))
+  (wherever k, k f notes))
+
+(defn phrase
+  "Translates a sequence of durations and pitches into a melody.
+  nil pitches signify rests.
+  e.g. (phrase [1/2 1/2 1/2 3/2 1/2 1/2 1/2] [0 1 2 nil 4 4/5 5])" 
+  [durations pitches]
+  (->> (rhythm durations)
+       (having :pitch pitches)
+       (wherever (comp not :pitch), :rest (is true))))
 
 (defn after
   "Delay notes by wait.
