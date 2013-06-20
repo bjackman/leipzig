@@ -21,10 +21,13 @@
 
 (def is
   "Synonym for constantly.
-  e.g. (->> notes (where :part (is :bass)))" 
+  e.g. (->> notes (wherever (comp not :part), :part (is :bass)))" 
   constantly)
 
-(defn always [k v notes] (map #(assoc % k v) notes))
+(defn always
+  "Set key k to value v for all notes.
+  e.g. (->> notes (always :part :piano))"
+  [k v notes] (map #(assoc % k v) notes))
 
 (defn- if-applicable [condition? f] (fn [x] (if (condition? x) (f x) x)))
 (defn wherever
