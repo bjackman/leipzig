@@ -6,7 +6,7 @@ document them here.
 
 New in 0.6.0
 ------------
-* *Addition* - `nil`s represent rests in `phrase`.
+* *Addition* - Passing `nil` to `phrase` generates a reified rest, which is ignored by play. 
 
 New in 0.5.0
 ------------
