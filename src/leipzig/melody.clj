@@ -29,17 +29,19 @@
   e.g. (->> notes (all :part :piano))"
   [k v notes] (map #(assoc % k v) notes))
 
-(defn- if-applicable [condition? f] (fn [x] (if (condition? x) (f x) x)))
 (defn wherever
-  "Applies f to the k key of each note wherever condition? returns true.
+  "Applies f to the k key of each note wherever condition? holds. 
   e.g. (->> notes (wherever (comp not :part), :part (is :piano))"
   [condition? k f notes]
   (map
-    (if-applicable condition? #(update-in % [k] f))
+    (fn [note] (if (condition? note)
+                 (update-in note [k] f)
+                 note))
     notes))
 
 (defn where
-  "Applies f to the k key of each note in notes.
+  "Applies f to the k key of each note in notes. Leaves notes without
+  a k key untouched.
   e.g. (->> notes (where :time (bpm 90)))"
   [k f notes]
   (wherever k, k f notes))
@@ -58,7 +60,8 @@
   e.g. (->> melody (after 3))"
   [wait notes] (where :time (from wait) notes))
 
-(defn- before? [a b] (<= (:time a) (:time b)))
+(defn before? [a b] (< (:time a) (:time b)))
+
 (defn with
   "Accompanies two melodies with each other.
   e.g. (->> melody (with bass))"
@@ -66,17 +69,21 @@
   (cond
     (empty? as) bs
     (empty? bs) as
-    (before? a b) (cons a (lazy-seq (with other-as bs)))
-    :otherwise    (cons b (lazy-seq (with as other-bs)))))
+    (before? b a) (cons b (lazy-seq (with as other-bs)))
+    :otherwise    (cons a (lazy-seq (with bs other-as)))))
+
+(defn duration [notes]
+  (->> notes
+       (map (fn [{t :time d :duration}] (+ t d)))
+       (reduce max)))
 
 (defn then 
   "Sequences later after earlier. 
   e.g. (->> call (then response))"
   [later earlier]
-    (let [{time :time duration :duration} (last earlier)]
-      (->> earlier
-        (with
-          (->> later (after (+ duration time)))))))
+  (->> earlier
+       (with
+         (->> later (after (duration earlier))))))
 
 (defn times
   "Repeats notes n times.
